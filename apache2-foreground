@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+if ! getent passwd ${DOCKER_USER} > /dev/null 2>&1; then
+    adduser --disabled-password --gecos "" ${DOCKER_USER}  > /dev/null 2>&1
+    sed -i -e "s/User\ www-data/User ${DOCKER_USER}/" /etc/apache2/apache2.conf  > /dev/null 2>&1
+    unset DOCKER_USER  > /dev/null 2>&1
+fi
+
+/etc/init.d/atd start  > /dev/null 2>&1
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /var/run/apache2/apache2.pid
+
+exec apache2 -DFOREGROUND
