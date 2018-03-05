@@ -15,6 +15,7 @@ COPY php.ini $PHP_INI_DIR
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update && apt-get install -y \
     git  ghostscript  at  ssed  \
+    sendmail-bin sendmail  \
     zlib1g-dev  firebird-dev  libsqlite3-dev  \
     libedit-dev  libicu-dev  libpq-dev  libpng12-dev  \
     libbz2-dev  libfreetype6-dev  libjpeg-dev  libxml2-dev  \
@@ -29,7 +30,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     opcache  \
     soap \
 &&  apt-get clean \
-;  pecl install xdebug
+;  pecl install xdebug-2.5.5
 
 
 RUN a2enmod rewrite

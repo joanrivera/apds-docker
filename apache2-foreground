@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+# Mapeado del nombre de usuario
 if ! getent passwd ${DOCKER_USER} > /dev/null 2>&1; then
     adduser --disabled-password --gecos "" ${DOCKER_USER}  > /dev/null 2>&1
     sed -i -e "s/User\ www-data/User ${DOCKER_USER}/" /etc/apache2/apache2.conf  > /dev/null 2>&1
@@ -18,6 +19,16 @@ mv "${cfg_file_path}.aux" ${cfg_file_path}
 
 # Activa ATD
 /etc/init.d/atd start  > /dev/null 2>&1
+
+
+# Modificaciones /etc/hosts
+cp /etc/hosts ~/hosts.new
+HOSTS_FIRST_LINE="127.0.0.1    localhost.localdomain localhost apds"
+sed -i "1s/.*/$HOSTS_FIRST_LINE/" ~/hosts.new
+cp -f ~/hosts.new /etc/hosts; rm ~/hosts.new
+# Activa sendmail
+service sendmail restart  > /dev/null 2>&1
+
 
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
