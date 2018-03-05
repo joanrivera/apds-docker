@@ -7,6 +7,16 @@ if ! getent passwd ${DOCKER_USER} > /dev/null 2>&1; then
     unset DOCKER_USER  > /dev/null 2>&1
 fi
 
+
+# Mapeado del document root
+cfg_file_path=/etc/apache2/sites-enabled/000-default.conf
+clean_server_droot="\/var\/www\/html\/"$(echo ${SERVER_DROOT} | sed 's#/#\\/#g')
+sed "s/DocumentRoot.*/DocumentRoot $clean_server_droot/" $cfg_file_path > "${cfg_file_path}.aux"
+rm ${cfg_file_path}
+mv "${cfg_file_path}.aux" ${cfg_file_path}
+
+
+# Activa ATD
 /etc/init.d/atd start  > /dev/null 2>&1
 
 # Apache gets grumpy about PID files pre-existing
