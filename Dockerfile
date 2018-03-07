@@ -61,6 +61,11 @@ COPY xdebug.ini /usr/local/etc/php/conf.d/
 COPY sites-available/* /etc/apache2/sites-enabled/
 
 
+# SSL
+COPY ssl/server.crt ssl/server.key /etc/ssl/
+EXPOSE 443
+
+
 # Se habilita el archivo de logs de PHP
 RUN (\
 export LOGS_PATH=/var/log/php_errors.log; \
